@@ -1,0 +1,75 @@
+.btn {
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+    margin: 5px 10px;
+}
+
+nav .btn {
+    width: 110px;
+}
+
+.btn-light {
+    color: #505050;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: none;
+    border: 2px solid rgb(220, 220, 220);
+}
+
+.form-group-center {
+    margin: auto;
+    display: block;
+}
+
+.weighty-form {
+    margin-top: 200px;
+}
+
+/* Bootstrap: hamburger */
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    background: rgb(230, 230, 230);
+}
+
+.form-control:focus {
+    border-color: #00a2ff;
+    box-shadow: none;
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.alert {
+    color: white;
+    border: none;
+    margin: 0;
+    border-radius: 0;
+    font-size: 1.5em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.alert-danger {
+    background: #FC345C;
+}
+
+.alert-success {
+    background: #49D292;
+}
+ 
+.alert-dismissible .close {
+    padding: 17px;
+}
+
+.close:focus, .close:hover {
+    color: white;
+}
