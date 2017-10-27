@@ -14,6 +14,10 @@
             header('Location: index.php');
         }
 
+        public function Redirect($url) {
+            header('Location: '.$url);
+        }
+
         // Redirect to the back page
         public static function RedirectToCurrentPage() {
             if(isset($_SERVER['HTTP_REFERER'])){

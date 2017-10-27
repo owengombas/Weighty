@@ -1,6 +1,6 @@
 <?php
     session_start();
-    require 'php/class/Autoloader.php';
+    require_once('php/class/Autoloader.php');
     Autoloader::Register();
     
     if(!Toolbox::IsConnected()) {
@@ -17,8 +17,7 @@
                     $res = $db->Execute('SELECT * FROM users WHERE username=? OR email=?', array($username, $email));
                     if($res->rowCount() <= 0) {
                         $db->Execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', array($username, $email, $password));
-                        $_SESSION['user'] = serialize(new User($username, $email));
-                        Toolbox::RedirectToHome();
+                        Toolbox::Redirect('sign_in.php');
                     } else {
                         $message->SetError('This username or e-mail exist, please choose another one');
                     }
@@ -74,5 +73,5 @@
 </div>
 
 <?php
-    require_once('php/inc/footer.inc.php')
+    require_once('php/inc/end.inc.php');
 ?>

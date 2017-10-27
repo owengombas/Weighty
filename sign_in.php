@@ -10,11 +10,11 @@
                 $username = strip_tags($_POST['username']);
                 $password = $_POST['password'];
                 $db = new Database();
-                $res = $db->Execute('SELECT username, email, password FROM users WHERE LOWER(username)=LOWER(?)', array($username));
+                $res = $db->Execute('SELECT * FROM users WHERE LOWER(username)=LOWER(?)', array($username));
                 if($res->rowCount() == 1) {
-                    $res= $res->fetch();
+                    $res = $res->fetch();
                     if(password_verify($password, $res['password'])) {
-                        $_SESSION['user'] = serialize(new User($res['username'], $res['email']));
+                        User::SignIn($res['id'], $res['username'], $res['email'], $res['admin']);
                         Toolbox::RedirectToHome();
                     } else {
                         $message->SetError('Wrong username or password');
@@ -67,5 +67,5 @@
 </div>
 
 <?php
-    require_once('php/inc/footer.inc.php')
+    require_once('php/inc/end.inc.php');
 ?>
