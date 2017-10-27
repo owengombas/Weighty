@@ -13,8 +13,8 @@ CREATE TABLE users (
 CREATE TABLE weights (
     id INT AUTO_INCREMENT,
     id_users INT NOT NULL,
-    weight VARCHAR(3) NOT NULL,
-    day DATE NOT NULL,
+    weight INT NOT NULL,
+    day DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT PK_weights PRIMARY KEY (id),
     CONSTRAINT FK_users_id FOREIGN KEY (id_users) REFERENCES users(id)
 );

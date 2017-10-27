@@ -30,4 +30,12 @@
         public static function IsConnected() {
             return isset($_SESSION['user']);
         }
+
+        public static function GetUser() {
+            return unserialize($_SESSION['user']);
+        }
+
+        public static function Refresh() {
+            header('Location: '.$_SERVER['PHP_SELF']);
+        }
     }
