@@ -23,23 +23,24 @@
     }
 
     if(isset($count) && Toolbox::IsConnected() && $count < 1) {
-        echo
-        '<div class="container-fluid weighty-form">
+?>
+        <div class="container-fluid weighty-form">
             <div class="row justify-content-md-center">
-                <div class="col-md-5">
-                    <form action="', $_SERVER['PHP_SELF'], '" method="POST">
+                <div class="col-md-6">
+                    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
+                        <h3>Enter a weight for today (kg)</h3>
                         <div class="form-group">
-                            <label for="inputWeight">Enter your weight of today (kg)</label>
                             <input type="text" id="inputWeight" class="form-control" placeholder="Weight" name="valueWeight">
                         </div>
-        
+
                         <div class="form-group">
                             <button type="submit" class="btn btn-secondary form-group-center" name="submit">Submit</button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>';
+        </div>
+<?php
     } else if(isset($count) && $count >= 1) {
         require_once('view/chartWeight.html');
     } else if(!Toolbox::IsConnected()) {

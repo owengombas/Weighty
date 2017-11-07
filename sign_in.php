@@ -6,15 +6,16 @@
     if(!Toolbox::IsConnected()) {
         if(isset($_POST['submit'])) {
             $message = new Message();
-            if(Toolbox::IsArrayNotEmpty($_POST)) {
+            if(Toolbox::ArrayHasValue($_POST, ['username', 'password'])) {
                 $username = strip_tags($_POST['username']);
                 $password = $_POST['password'];
                 $db = new Database();
                 $res = $db->Execute('SELECT * FROM users WHERE LOWER(username)=LOWER(?)', array($username));
                 if($res->rowCount() == 1) {
-                    $res = $res->fetch();
-                    if(password_verify($password, $res['password'])) {
-                        User::SignIn($res['id'], $res['username'], $res['email'], $res['admin']);
+                    $res = $res->fetch(PDO::FETCH_OBJ);
+                    if(password_verify($password, $res->password)) {
+                        var_dump($res);
+                        User::SignIn($res->id, $res->username, $res->email, (int)$res->admin);
                         Toolbox::RedirectToHome();
                     } else {
                         $message->SetError('Wrong username or password');
@@ -23,7 +24,7 @@
                     $message->SetError('Wrong username or password');
                 }
             } else {
-                $message->SetError('Please enter values');
+                $message->SetError('Fill all fields');
             }  
         }
     } else {
@@ -39,15 +40,14 @@
 
 <div class="container-fluid weighty-form">
     <div class="row justify-content-md-center">
-        <div class="col-md-4">
+        <div class="col-md-6">
+            <h1 class="text-center">Sign in</h1>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="inputSIUsername">Username</label>
                     <input type="text" id="inputSIEU" class="form-control" placeholder="Username" name="username" value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
                 </div>
 
                 <div class="form-group">
-                    <label for="inputSIPassword">Password</label>
                     <input type="password" id="inputSIPassword" class="form-control" placeholder="Password" name="password">
                 </div>
 

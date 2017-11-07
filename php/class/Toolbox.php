@@ -1,20 +1,20 @@
 <?php
     class Toolbox {
         // Check if array hasn't a empty value
-        public static function IsArrayNotEmpty($array) {
-            foreach($array as $i){
-                if(empty($i)){
-                    return true;
+        public static function ArrayHasValue($array, $keys) {
+            foreach($keys as $key) {
+                if(empty($array[$key])) {
+                    return false;  
                 }
             }
-            return false;
+            return true;
         }
 
         public static function RedirectToHome() {
             header('Location: index.php');
         }
 
-        public function Redirect($url) {
+        public static function Redirect($url) {
             header('Location: '.$url);
         }
 
@@ -23,12 +23,20 @@
             if(isset($_SERVER['HTTP_REFERER'])){
                 header('location: '.$_SERVER['HTTP_REFERER']);
             } else {
-                $this->RedirectToHome();
+                self::RedirectToHome();
             }
         }
 
         public static function IsConnected() {
             return isset($_SESSION['user']);
+        }
+        
+        public static function GetAdmin() {
+            return self::IsConnected() ? self::GetUser()->Admin : 0;
+        } 
+
+        public static function IsAdmin() {
+            return boolval(self::GetAdmin());
         }
 
         public static function GetUser() {
@@ -36,6 +44,6 @@
         }
 
         public static function Refresh() {
-            header('Location: '.$_SERVER['PHP_SELF']);
+            header('Refresh: 0');
         }
     }

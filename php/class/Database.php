@@ -24,10 +24,10 @@
             if(is_numeric($value)) {
                 $value = (int)$value;
                 if($value > 0) {
-                    $this->Execute($update ? 'UPDATE weights SET weight = :value WHERE day = CURDATE() AND id_users = :id' : 
+                    $this->Execute($update ? 
+                                            'UPDATE weights SET weight = :value WHERE day = CURDATE() AND id_users = :id' : 
                                             'INSERT INTO weights (id_users, weight, day) VALUES (:id, :value, CURDATE())', 
-                                            array(':value' => $value, ':id' => Toolbox::GetUser()->ID));
-                    $message->SetSuccess('You saved your weight for today');
+                                    array(':value' => $value, ':id' => Toolbox::GetUser()->ID));
                     Toolbox::Refresh();
                 } else {
                     $message->SetError('The value must be greater than 0');

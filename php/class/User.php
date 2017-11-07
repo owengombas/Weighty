@@ -7,7 +7,7 @@
             $this->Admin = $admin;
         }
 
-        public static function SignIn($id, $username, $email) {
+        public static function SignIn($id, $username, $email, $admin) {
             $_SESSION['user'] = serialize(new User($id, $username, $email, $admin));
         }
     }

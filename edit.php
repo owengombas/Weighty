@@ -13,26 +13,26 @@
     $res = $res->fetch(PDO::FETCH_OBJ);
 
     if(isset($_POST['changeWeight'])) {
-        if($res) {
-            $message = $db->InsertUpdateWeight($_POST['valueWeight'], true);
+        if(Toolbox::ArrayHasValue($_POST, ['valueWeight'])){
+            $message = $db->InsertUpdateWeight($_POST['valueWeight'], isset($res->weight));
         } else {
-            $message->SetError('Enter a value for today before');
+            $message->SetError('Fill all fields');
         }
     } 
 
     if(isset($_POST['changePassword'])) {
-        if(password_verify($_POST['oldPassword'], $res->password)) {
-            if(!empty($_POST['newPassword']) && !empty($_POST['confirmPassword'])) {
+        if(Toolbox::ArrayHasValue($_POST, ['oldPassword', 'newPassword', 'confirmPassword'])) {
+            if(password_verify($_POST['oldPassword'], $res->password)) {
                 if($_POST['newPassword'] == $_POST['confirmPassword']) {
                     $db->Execute('UPDATE users SET password = ? WHERE id = ?', array(password_hash($_POST['newPassword'], PASSWORD_BCRYPT), Toolbox::GetUser()->ID));
                 } else {
-                    $message->SetError('Password doesn\'t match');
+                    $message->SetError('Passwords do not match');
                 }
             } else {
-                $message->SetError('Enter values');
+                $message->SetError('Your old password doesn\'t match');
             }
         } else {
-            $message->SetError('Your old password doesn\'t match');
+            $message->SetError('Fill all fields');
         }
     }
 
@@ -46,7 +46,7 @@
 
     <div class="container-fluid weighty-form">
         <div class="row justify-content-md-center">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                     <h3>Change your weight of today (kg)</h3>
                     <div class="form-group">

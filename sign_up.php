@@ -6,7 +6,7 @@
     if(!Toolbox::IsConnected()) {
         if(isset($_POST['submit'])) {
             $message = new Message();
-            if(Toolbox::IsArrayNotEmpty($_POST)) {
+            if(Toolbox::ArrayHasValue($_POST, ['username', 'email', 'password', 'confirm'])) {
                 $password = $_POST['password'];
                 $confirm = $_POST['confirm'];
                 if($password == $confirm) {
@@ -19,13 +19,13 @@
                         $db->Execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', array($username, $email, $password));
                         Toolbox::Redirect('sign_in.php');
                     } else {
-                        $message->SetError('This username or e-mail exist, please choose another one');
+                        $message->SetError('This username or e-mail exists, choose another one');
                     }
                 } else {
-                    $message->SetError('Password doesn\'t match');
+                    $message->SetError('Passwords do not match');
                 }
             } else {
-                $message->SetError('Please enter values');
+                $message->SetError('Fill all fields');
             }
         }
     } else {
@@ -41,26 +41,23 @@
 
 <div class="container-fluid weighty-form">
     <div class="row justify-content-md-center">
-        <div class="col-md-4">
+        <div class="col-md-6">
+            <h1 class="text-center">Sign up</h1>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="inputSUUsername">Username</label>
                     <input type="text" class="form-control" placeholder="Username" name="username" value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
                 </div>
 
                 <div class="form-group">
-                    <label for="inputSUEmail">E-mail</label>
                     <input type="email" id="inputSUEmail" class="form-control" placeholder="E-mail" name="email" value="<?php if(isset($_POST['email'])) echo $_POST['email']; ?>">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="inputSUPassword">Password</label>
                         <input type="password" class="form-control" placeholder="Password" name="password">
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="inputConfirm">Confirm</label>
                         <input type="password" id="inputSUConfirm" class="form-control" placeholder="Confirm" name="confirm">
                     </div>
                 </div>
@@ -70,7 +67,7 @@
                 </div>
             </form>
             <div class="text-center">
-                <a href="sign_in.php">You are already registered ?</a>
+                <a href="sign_in.php">Already registered ?</a>
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@ nav .btn {
 }
 
 h1 {
-    margin-top: 25px;
+    margin-top: 45px;
 }
 
 .btn-light {
@@ -27,10 +27,6 @@ h1 {
 .form-group-center {
     margin: auto;
     display: block;
-}
-
-form {
-    margin-top: 100px;
 }
 
 /* Bootstrap: hamburger */
@@ -84,4 +80,40 @@ form {
 
 a:hover{
     text-decoration: none;
+}
+
+.btn-danger {
+    background: #ff304f;
+}
+
+.list-group {
+    margin-top: 30px;
+}
+
+.list-group form {
+    margin-top: 5px; 
+}
+
+body {
+    padding-bottom: 30px;
+}
+
+button:hover, .btn:hover{
+    cursor: pointer;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+form {
+    margin-top: 75px;
+}
+
+.margin-top-25{
+    margin-top: 25px;
+}
+
+.no-margin-top {
+    margin-top: 0;
 }
