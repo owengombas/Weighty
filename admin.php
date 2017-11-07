@@ -121,14 +121,14 @@
                         Toolbox::Redirect('admin.php');
                     }
 
-                    if(isset($_POST['search'])) {
-                        $res = $db->Execute('SELECT * FROM users WHERE username LIKE "%'.$_POST['valueSearch'].'%" OR email LIKE "%'.$_POST['valueSearch'].'%" ORDER BY username'); 
+                    if(isset($_POST['search']) && !empty($_POST['valueSearch'])) {
+                        $res = $db->Execute('SELECT * FROM users WHERE username LIKE "%'.$_POST['valueSearch'].'%" OR email LIKE "%'.$_POST['valueSearch'].'%" ORDER BY username');
                         $count = $res->rowCount();
-                    } else if (!isset($_POST['search']) || isset($_POST['all'])) {
+                    } else {
                         $res = $db->Execute('SELECT * FROM users ORDER BY username LIMIT '.$limit.' OFFSET '.($page - 1) * $limit);
                     }
                     
-                    echo '<h1 class="text-center">', $count,' user', $count > 1 ? 's' : '','</h1>';
+                    echo '<h1 class="text-center">', $count > 0 ? $count.' user'.($count > 1 ? 's' : '') : 'No results','</h1>';
                     echo 
                         '<form action="', $_SERVER['PHP_SELF'], '" method="POST" class="col-md-12">
                             <div class="row form-group">
@@ -149,7 +149,7 @@
                         '</a>';
                     }
                     echo '</div>';
-                    if(!isset($_POST['search'])) {
+                    if(!isset($_POST['search']) || empty($_POST['valueSearch'])) {
                         echo 
                         '<div class="col-md-10 offset-md-3 margin-top-25">
                             <a href="admin.php?page=', $page - 1 < 1 ? $page : $page - 1, '" class="btn btn-secondary col-md-3 ', $page - 1 < 1 ? 'disabled' : '', '">Previous</a>
