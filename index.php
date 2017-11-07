@@ -6,36 +6,31 @@
     if(Toolbox::IsConnected()) {
         $db = new Database();    
         $message = new Message();
+
+        // If he hasn't enter a weight today == 0 else == 1
         $res = $db->Execute('SELECT COUNT(*) AS count FROM weights WHERE day = CURDATE() AND id_users = ?', array(Toolbox::GetUser()->ID));
         $count = $res->fetch(PDO::FETCH_OBJ)->count;
 
         if(isset($_POST['submit'])) {
-            $value = $_POST['value'];
-            if(is_numeric($value)) {
-                $db->Execute('INSERT INTO weights (id_users, weight, day) VALUES (?, ?, CURDATE())', array(Toolbox::GetUser()->ID, $value));
-                $message->SetSuccess('You saved your weight for today');
-                Toolbox::Refresh();
-            } else {
-                $message->SetError('Enter a numeric value');
-            }
+            $message = $db->InsertUpdateWeight($_POST['valueWeight'], false);
         }
     }
 
+    require_once('php/inc/header.inc.php');
+   
     if(isset($message)) {
         $message->Show();
     }
-    require_once('php/inc/header.inc.php');
-   
-    
+
     if(isset($count) && Toolbox::IsConnected() && $count < 1) {
         echo
         '<div class="container-fluid weighty-form">
             <div class="row justify-content-md-center">
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <form action="', $_SERVER['PHP_SELF'], '" method="POST">
                         <div class="form-group">
-                            <label for="inputWeight">Enter your weight</label>
-                            <input type="text" id="inputWeight" class="form-control" placeholder="Enter your weight" name="value">
+                            <label for="inputWeight">Enter your weight of today (kg)</label>
+                            <input type="text" id="inputWeight" class="form-control" placeholder="Weight" name="valueWeight">
                         </div>
         
                         <div class="form-group">

@@ -7,36 +7,50 @@
         Toolbox::Redirect('sign_up.php');
     }
 
+    $message = new Message();
     $db = new Database();
-    $res = $db->Execute('SELECT weight FROM weights WHERE day = CURDATE() AND id_users = ?', array(Toolbox::GetUser()->ID));
+    $res = $db->Execute('SELECT users.password, weights.weight FROM users LEFT OUTER JOIN weights ON weights.id_users = :id AND weights.day = CURDATE() WHERE users.id = :id', array(':id' => Toolbox::GetUser()->ID));
     $res = $res->fetch(PDO::FETCH_OBJ);
 
-    $message = new Message();
-
     if(isset($_POST['changeWeight'])) {
-        if(isset($_POST['valueWeight'])) {
-            if(is_numeric($_POST['valueWeight'])) {
-                $db->Execute('UPDATE weights SET weight = ? WHERE day = CURDATE() AND id_users = ?', array((int)$_POST['valueWeight'], Toolbox::GetUser()->ID));
-                Toolbox::RedirectToCurrentPage();
-            } else {    
-                $message->SetError('Enter a numeric value');
-            }
+        if($res) {
+            $message = $db->InsertUpdateWeight($_POST['valueWeight'], true);
         } else {
-            $message->SetError('Enter a value');
+            $message->SetError('Enter a value for today before');
         }
     } 
 
+    if(isset($_POST['changePassword'])) {
+        if(password_verify($_POST['oldPassword'], $res->password)) {
+            if(!empty($_POST['newPassword']) && !empty($_POST['confirmPassword'])) {
+                if($_POST['newPassword'] == $_POST['confirmPassword']) {
+                    $db->Execute('UPDATE users SET password = ? WHERE id = ?', array(password_hash($_POST['newPassword'], PASSWORD_BCRYPT), Toolbox::GetUser()->ID));
+                } else {
+                    $message->SetError('Password doesn\'t match');
+                }
+            } else {
+                $message->SetError('Enter values');
+            }
+        } else {
+            $message->SetError('Your old password doesn\'t match');
+        }
+    }
+
     require_once('php/inc/header.inc.php');
-   
-    echo 
-    '<h1 class="text-center">Setting</h1>
+    
+    if(isset($message)) {
+        $message->Show();
+    }
+?>
+    <h1 class="text-center">Setting</h1>
+
     <div class="container-fluid weighty-form">
         <div class="row justify-content-md-center">
             <div class="col-md-4">
-                <form action="', $_SERVER['PHP_SELF'], '" method="POST">
-                    <h3>Change your weight of today</h3>
+                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
+                    <h3>Change your weight of today (kg)</h3>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter your weight" name="valueWeight" value="', $res ? $res->weight : "" ,'">
+                        <input type="text" class="form-control" placeholder="Enter your weight" name="valueWeight" value="<?= $res ? $res->weight : "" ?>">
                     </div>
 
                     <div class="form-group">
@@ -44,18 +58,18 @@
                     </div>
                 </form>
 
-                <form action="', $_SERVER['PHP_SELF'], '" method="POST">
+                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                     <h3>Change your password</h3>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Old password" name="oldPassword">
+                        <input type="password" class="form-control" placeholder="Old password" name="oldPassword">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="New password" name="newPassword">
+                        <input type="password" class="form-control" placeholder="New password" name="newPassword">
                     </div>
                     
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Confirm" name="confirmPassword">
+                        <input type="password" class="form-control" placeholder="Confirm" name="confirmPassword">
                     </div>
 
                     <div class="form-group">
@@ -64,7 +78,8 @@
                 </form>
             </div>
         </div>
-    </div>';
+    </div>
 
+<?php
     require_once('php/inc/end.inc.php');
 ?>

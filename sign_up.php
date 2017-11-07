@@ -31,11 +31,12 @@
     } else {
         Toolbox::RedirectToHome();
     }
-
+    
+    require_once('php/inc/header.inc.php'); 
+    
     if(isset($message)) {
         $message->Show();
     }
-    require_once('php/inc/header.inc.php'); 
 ?>
 
 <div class="container-fluid weighty-form">
