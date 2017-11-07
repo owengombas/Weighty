@@ -10,6 +10,10 @@ nav .btn {
     width: 110px;
 }
 
+h1 {
+    margin-top: 25px;
+}
+
 .btn-light {
     color: #505050;
 }
@@ -25,8 +29,8 @@ nav .btn {
     display: block;
 }
 
-.weighty-form {
-    margin-top: 200px;
+form {
+    margin-top: 100px;
 }
 
 /* Bootstrap: hamburger */
@@ -72,4 +76,12 @@ nav .btn {
 
 .close:focus, .close:hover {
     color: white;
+}
+
+.text-muted {
+    color: rgb(70, 70, 70);
+}
+
+a:hover{
+    text-decoration: none;
 }

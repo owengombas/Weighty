@@ -4,10 +4,10 @@ function request(url, type, data, callback) {
         type: type,
         data: data,
 
-        success: (data) => {
+        success: function(data) {
             callback(data);
         },
-        error: (data) => {
+        error: function(data) {
             console.log('Error ' + data);
         }
     });

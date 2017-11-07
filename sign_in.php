@@ -50,13 +50,13 @@
                     <input type="password" id="inputSIPassword" class="form-control" placeholder="Password" name="password">
                 </div>
 
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
                         <input type="checkbox" class="custom-control-input" name="remember">
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description">Remember me</span>
                     </label>
-                </div>
+                </div>-->
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-secondary form-group-center" name="submit">Sign in</button>

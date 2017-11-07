@@ -68,6 +68,9 @@
                     <button type="submit" class="btn btn-secondary form-group-center" name="submit">Sign up</button>
                 </div>
             </form>
+            <div class="text-center">
+                <a href="sign_in.php">You are already registered ?</a>
+            </div>
         </div>
     </div>
 </div>

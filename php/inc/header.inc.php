@@ -14,8 +14,10 @@
             crossorigin="anonymous">
         <link rel="stylesheet" href="css/style.css">
         <script src="js/lib/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <script src="js/request.js"></script>
     </head>
     
     <body>
@@ -30,30 +32,22 @@
                 <ul class="nav justify-content-end navbar-nav">';
                 
     if(Toolbox::IsConnected()) {
-        echo '<li class="nav-item btn btn-light"><span class="username">', unserialize($_SESSION['user'])->Username, '</span></li>';
+        echo '<li class="nav-item btn btn-light"><a href="edit.php" class="text-dark username">', unserialize($_SESSION['user'])->Username, '</a></li>';
     }
-                
-    // Show all the links to naviguate on the website
-    // The current page is not displayed in the menu
-    // The diplayed name is based on the filename: a_b_c.php = A b c (No extension, no "_", Uppercase first letter)
-    // Exeception for index.php file, it will appear like that: Home
-    foreach(scandir('.') as $i) {
-        if(pathinfo($i, PATHINFO_EXTENSION) == 'php') {
-            if(is_file($i) && $i != pathinfo($_SERVER["PHP_SELF"])['basename']) {
-                if(($i == 'sign_out.php' && Toolbox::IsConnected()) || (!Toolbox::IsConnected() && $i != 'sign_out.php')) {
-                    echo 
-                    '<li class="nav-item">
-                        <a class="btn btn-primary" href="', $i, '">';
+    
+    $conf = array(
+        new File('index.php', 'Home', true, false),
+        new File('sign_out.php', 'Sign out', true, false),
+        new File('sign_in.php', 'Sign in', false, true),
+        new File('sign_up.php', 'Sign up', false, true)
+    );
 
-                    if($i == 'index.php') {
-                        $i = 'home';
-                    }
-                    
-                    echo
-                        ucfirst(str_replace('_', ' ', basename($i, '.php'))), '</a>
-                    </li>';
-                }
-            }
+    foreach($conf as $i) {
+        if(Toolbox::IsConnected() == $i->displayLogged && $i->fileName != pathinfo($_SERVER["PHP_SELF"])['basename']) {
+            echo 
+            '<li class="nav-item">
+                <a class="btn btn-primary" href="', $i->fileName, '">', $i->displayName, '</a>
+            </li>';
         }
     }
 
