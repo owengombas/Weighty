@@ -16,7 +16,7 @@
                     if(password_verify($password, $res->password)) {
                         var_dump($res);
                         User::SignIn($res->id, $res->username, $res->email, (int)$res->admin);
-                        Toolbox::RedirectToHome();
+                        Toolbox::Redirect('index.php');
                     } else {
                         $message->SetError('Wrong username or password');
                     }

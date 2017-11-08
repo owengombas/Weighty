@@ -21,19 +21,27 @@
         public function InsertUpdateWeight($value, $update) {
             $message = new Message();
 
-            if(is_numeric($value)) {
-                $value = (int)$value;
-                if($value > 0) {
-                    $this->Execute($update ? 
-                                            'UPDATE weights SET weight = :value WHERE day = CURDATE() AND id_users = :id' : 
-                                            'INSERT INTO weights (id_users, weight, day) VALUES (:id, :value, CURDATE())', 
-                                    array(':value' => $value, ':id' => Toolbox::GetUser()->ID));
-                    Toolbox::Refresh();
+            if(isset($value)) {
+                if(is_numeric($value)) {
+                    $value = (int)$value;
+                    if($value <= 9999) {
+                        if($value > 0) {
+                            $this->Execute($update ? 
+                                                    'UPDATE weights SET weight = :value WHERE day = CURDATE() AND id_users = :id' : 
+                                                    'INSERT INTO weights (id_users, weight, day) VALUES (:id, :value, CURDATE())', 
+                                            array(':value' => $value, ':id' => Toolbox::GetUser()->ID));
+                            $message->SetSuccess('Your weight has been submitted');
+                        } else {
+                            $message->SetError('The value must be greater than 0');
+                        }
+                    } else {
+                        $message->SetError('The value is too big');
+                    }
                 } else {
-                    $message->SetError('The value must be greater than 0');
+                    $message->SetError('Enter a numeric value');
                 }
             } else {
-                $message->SetError('Enter a numeric value');
+                $message->SetError('Fill all fields');
             }
 
             return $message;

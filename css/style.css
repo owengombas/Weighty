@@ -1,13 +1,11 @@
 .btn {
     border-radius: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
     font-weight: bold;
-    margin: 5px 10px;
 }
 
 nav .btn {
     width: 110px;
+    margin-left: 15px;
 }
 
 h1 {
@@ -16,6 +14,11 @@ h1 {
 
 .btn-light {
     color: #505050;
+}
+
+.link-white {
+    color: white;
+    font-weight: 1.2em;
 }
 
 .form-control {
@@ -112,6 +115,26 @@ form {
 
 .margin-top-25{
     margin-top: 25px;
+}
+
+.margin-top-50{
+    margin-top: 50px;
+}
+
+.margin-top-75{
+    margin-top: 75px;
+}
+
+.margin-left-25{
+    margin-left: 25px;
+}
+
+.margin-left-50{
+    margin-left: 50px;
+}
+
+.margin-left-75{
+    margin-left: 75px;
 }
 
 .no-margin-top {

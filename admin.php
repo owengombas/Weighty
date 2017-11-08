@@ -12,14 +12,19 @@
                     $_POST['admin'] = Toolbox::GetAdmin();
                 }
                 $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $_GET['id']));
-                Toolbox::Refresh();
+                if(isset($_GET['page']) && isset($_GET['id'])) {
+                    Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $_GET['id']));
+                }
             } else {
                 $message->SetError('Values can\'t be empty');
             }
         }
 
         if(isset($_POST['delete'])) {
-            $res = $db->Execute('DELETE FROM users WHERE id = ?', array($_POST['delete'])); 
+            $res = $db->Execute('DELETE FROM users WHERE id = ?', array($_POST['delete']));
+            if(isset($_GET['page'])) {
+                Toolbox::Redirect('admin.php', array('page' => $_GET['page']));
+            }
         }
     } else {
         Toolbox::RedirectToHome();
@@ -36,7 +41,7 @@
     <div class="row justify-content-md-center">
         <div class="col-md-6">
             <?php
-                if(isset($_GET['id'])) {
+                if(isset($_GET['id']) && !isset($_POST['delete'])) {
                     $res = $db->Execute('SELECT * FROM users WHERE id = ?', array($_GET['id']));
                     $res = $res->fetch(PDO::FETCH_OBJ);
                     if($res) {
@@ -69,7 +74,7 @@
                     <?php } ?>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-secondary form-group-center" name="update">Update</button>
+                        <button type="submit" class="btn btn-secondary form-group-center" name="update">Change</button>
                     </div>
 
                     <?php if($res->id != Toolbox::GetUser()->ID) {?>
@@ -127,17 +132,32 @@
                     } else {
                         $res = $db->Execute('SELECT * FROM users ORDER BY username LIMIT '.$limit.' OFFSET '.($page - 1) * $limit);
                     }
-                    
-                    echo '<h1 class="text-center">', $count > 0 ? $count.' user'.($count > 1 ? 's' : '') : 'No results','</h1>';
-                    echo 
-                        '<form action="', $_SERVER['PHP_SELF'], '" method="POST" class="col-md-12">
-                            <div class="row form-group">
-                                <input type="text" name="valueSearch" id="search" class="form-control col-md-7" placeholder="Search by username" value="', isset($_POST['valueSearch']) ? $_POST['valueSearch'] : '', '">
-                                <button type="submit" class="btn btn-secondary col-md-2" name="search">Search</button>
-                                <button type="submit" class="btn btn-primary col-md-2" name="all">Show all</button>
-                            </div>    
-                        </form>';
-                    echo '<div class="list-group">';
+                ?>    
+
+                    <h1 class="text-center"><?= $count > 0 ? $count.' user'.($count > 1 ? 's' : '') : 'No results' ?></h1>
+                    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="text" name="valueSearch" class="form-control" placeholder="Search by username" value="<?= isset($_POST['valueSearch']) ? $_POST['valueSearch'] : '' ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-block" name="search">Search</button>
+                            </div>
+                        </div>
+                <?php
+                    if(isset($_POST['search'])) {
+                        echo
+                        '<div class="row">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-secondary btn-block margin-top-25" name="all">Show all users</button>
+                            </div>
+                        </div>';
+                    }
+                ?>
+                    </form>
+                    <div class="list-group margin-top-75">
+
+                <?php
                     while($i = $res->fetch(PDO::FETCH_OBJ)) {
                         echo 
                         '<a href="admin.php?page=', $page,'&id=', $i->id,'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
@@ -150,11 +170,24 @@
                     }
                     echo '</div>';
                     if(!isset($_POST['search']) || empty($_POST['valueSearch'])) {
-                        echo 
-                        '<div class="col-md-10 offset-md-3 margin-top-25">
-                            <a href="admin.php?page=', $page - 1 < 1 ? $page : $page - 1, '" class="btn btn-secondary col-md-3 ', $page - 1 < 1 ? 'disabled' : '', '">Previous</a>
-                            <a href="admin.php?page=', $page + 1 > $total ? $page : $page + 1, '" class="btn btn-secondary col-md-3 ', $page + 1 > $total ? 'disabled' : '', '">Next</a>
-                        </div>';
+                ?>
+                        <div class="row margin-top-25">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="admin.php?page=<?= $page - 1 < 1 ? $page : $page - 1 ?>" class="btn btn-secondary btn-block <?= $page - 1 < 1 ? 'disabled' : '' ?>">Previous</a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="admin.php?page=<?= $page + 1 > $total ? $page : $page + 1 ?>" class="btn btn-secondary btn-block <?= $page + 1 > $total ? 'disabled' : '' ?>">Next</a>
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <?php
                     }
                 }
             ?>

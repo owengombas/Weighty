@@ -5,4 +5,4 @@
     require_once('php/class/Autoloader.php');
     Autoloader::Register();
 
-    Toolbox::RedirectToHome();
+    Toolbox::Redirect('sign_up.php');

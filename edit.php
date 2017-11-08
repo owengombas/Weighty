@@ -8,15 +8,17 @@
     }
 
     $message = new Message();
+    if(isset($_GET['message'])) {
+        $message->SetSuccess($_GET['message']);
+    }
     $db = new Database();
     $res = $db->Execute('SELECT users.password, weights.weight FROM users LEFT OUTER JOIN weights ON weights.id_users = :id AND weights.day = CURDATE() WHERE users.id = :id', array(':id' => Toolbox::GetUser()->ID));
     $res = $res->fetch(PDO::FETCH_OBJ);
 
     if(isset($_POST['changeWeight'])) {
-        if(Toolbox::ArrayHasValue($_POST, ['valueWeight'])){
-            $message = $db->InsertUpdateWeight($_POST['valueWeight'], isset($res->weight));
-        } else {
-            $message->SetError('Fill all fields');
+        $message = $db->InsertUpdateWeight($_POST['valueWeight'], isset($res->weight));
+        if($message->Status >= 1){
+            Toolbox::Redirect('edit.php', array('message' => $message->Message));
         }
     } 
 
@@ -24,7 +26,12 @@
         if(Toolbox::ArrayHasValue($_POST, ['oldPassword', 'newPassword', 'confirmPassword'])) {
             if(password_verify($_POST['oldPassword'], $res->password)) {
                 if($_POST['newPassword'] == $_POST['confirmPassword']) {
-                    $db->Execute('UPDATE users SET password = ? WHERE id = ?', array(password_hash($_POST['newPassword'], PASSWORD_BCRYPT), Toolbox::GetUser()->ID));
+                    if(strlen($_POST['newPassword']) >= 4) {
+                        $db->Execute('UPDATE users SET password = ? WHERE id = ?', array(password_hash($_POST['newPassword'], PASSWORD_BCRYPT), Toolbox::GetUser()->ID));
+                        Toolbox::Redirect('edit.php', array('message' => 'Your passdword has been changed'));
+                    } else {
+                        $message->SetError('Your password is too short');
+                    }
                 } else {
                     $message->SetError('Passwords do not match');
                 }
@@ -34,6 +41,11 @@
         } else {
             $message->SetError('Fill all fields');
         }
+    }
+
+    if(isset($_POST['deleteWeight'])) {
+        $db->Execute('DELETE FROM weights WHERE id_users = ? AND day = CURDATE()', array(Toolbox::GetUser()->ID));
+        Toolbox::Redirect('edit.php', array('message' => 'Your weight has been deleted'));
     }
 
     require_once('php/inc/header.inc.php');
@@ -54,7 +66,38 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary form-group-center" name="changeWeight">Change</button>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-secondary btn-block" name="changeWeight">Change</button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Delete</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                You wan't to delete your weight of today ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" class="no-margin-top">
+                                        <button type="submit" class="btn btn-danger" name="deleteWeight">Yes, delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
 
@@ -73,7 +116,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary form-group-center" name="changePassword">Change</button>
+                        <button type="submit" class="btn btn-secondary form-group-center" name="changePassword">Change</button>
                     </div>
                 </form>
             </div>

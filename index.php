@@ -6,6 +6,7 @@
     if(Toolbox::IsConnected()) {
         $db = new Database();    
         $message = new Message();
+        $valueEntered = false;
 
         // If he hasn't enter a weight today == 0 else == 1
         $res = $db->Execute('SELECT COUNT(*) AS count FROM weights WHERE day = CURDATE() AND id_users = ?', array(Toolbox::GetUser()->ID));
@@ -13,7 +14,12 @@
 
         if(isset($_POST['submit'])) {
             $message = $db->InsertUpdateWeight($_POST['valueWeight'], false);
+            if($message->Status >= 1){
+                Toolbox::RedirectToCurrentPage();
+            }
         }
+    } else {
+        Toolbox::Redirect('sign_up.php');
     }
 
     require_once('php/inc/header.inc.php');
@@ -22,7 +28,8 @@
         $message->Show();
     }
 
-    if(isset($count) && Toolbox::IsConnected() && $count < 1) {
+    echo $valueEntered;
+    if(isset($count) && $count < 1) {
 ?>
         <div class="container-fluid weighty-form">
             <div class="row justify-content-md-center">
@@ -41,10 +48,10 @@
             </div>
         </div>
 <?php
-    } else if(isset($count) && $count >= 1) {
         require_once('view/chartWeight.html');
-    } else if(!Toolbox::IsConnected()) {
-        Toolbox::Redirect('sign_up.php');
+    } else {
+        echo '<h1 class="text-center">You have enter a weight today</h1>';
+        require_once('view/chartWeight.html');
     }
 
     require_once('php/inc/end.inc.php');

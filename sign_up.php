@@ -10,16 +10,20 @@
                 $password = $_POST['password'];
                 $confirm = $_POST['confirm'];
                 if($password == $confirm) {
-                    $username = strip_tags($_POST['username']);
-                    $email = strip_tags($_POST['email']);
-                    $password = password_hash($password, PASSWORD_BCRYPT);
-                    $db = new Database();
-                    $res = $db->Execute('SELECT * FROM users WHERE username=? OR email=?', array($username, $email));
-                    if($res->rowCount() <= 0) {
-                        $db->Execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', array($username, $email, $password));
-                        Toolbox::Redirect('sign_in.php');
+                    if(strlen($password) >= 4) {
+                        $username = strip_tags($_POST['username']);
+                        $email = strip_tags($_POST['email']);
+                        $password = password_hash($password, PASSWORD_BCRYPT);
+                        $db = new Database();
+                        $res = $db->Execute('SELECT * FROM users WHERE username=? OR email=?', array($username, $email));
+                        if($res->rowCount() <= 0) {
+                            $db->Execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', array($username, $email, $password));
+                            Toolbox::Redirect('sign_in.php');
+                        } else {
+                            $message->SetError('This username or e-mail exists, choose another one');
+                        }
                     } else {
-                        $message->SetError('This username or e-mail exists, choose another one');
+                        $message->SetError('Your password is too short');
                     }
                 } else {
                     $message->SetError('Passwords do not match');

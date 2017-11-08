@@ -3,7 +3,7 @@
         // Check if array hasn't a empty value
         public static function ArrayHasValue($array, $keys) {
             foreach($keys as $key) {
-                if(empty($array[$key])) {
+                if(!isset($array[$key])) {
                     return false;  
                 }
             }
@@ -11,17 +11,23 @@
         }
 
         public static function RedirectToHome() {
-            header('Location: index.php');
+            self::Redirect('Location: index.php');
         }
 
-        public static function Redirect($url) {
-            header('Location: '.$url);
+        public static function Redirect($url, $params = null) {
+            if(isset($params)) {
+                $str = '';
+                foreach($params as $key => $value) {
+                    $str .= (!empty($str) ? '&' : '').$key.'='.$value;
+                }
+            }
+            header('Location: '.$url.(isset($str) ? '?'.$str : ''));
         }
 
         // Redirect to the back page
         public static function RedirectToCurrentPage() {
             if(isset($_SERVER['HTTP_REFERER'])){
-                header('location: '.$_SERVER['HTTP_REFERER']);
+                self::Redirect($_SERVER['HTTP_REFERER']);
             } else {
                 self::RedirectToHome();
             }
