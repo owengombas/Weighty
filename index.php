@@ -41,7 +41,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-secondary form-group-center" name="submit">Submit</button>
+                            <button type="submit" class="btn btn-primary form-group-center" name="submit">Submit</button>
                         </div>
                     </form>
                 </div>

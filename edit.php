@@ -69,10 +69,10 @@
                         <div class="row">
                             <div class="col-md-2"></div>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-secondary btn-block" name="changeWeight">Change</button>
+                                <button type="submit" class="btn btn-primary btn-block" name="changeWeight">Change</button>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                <button type="button" class="btn btn-secondary btn-block" data-toggle="modal" data-target="#deleteModal">Delete</button>
                             </div>
                             <div class="col-md-2"></div>
                         </div>
@@ -116,7 +116,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-secondary form-group-center" name="changePassword">Change</button>
+                        <button type="submit" class="btn btn-primary form-group-center" name="changePassword">Change</button>
                     </div>
                 </form>
             </div>

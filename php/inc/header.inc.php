@@ -45,7 +45,7 @@
         if(Toolbox::IsConnected() == $i->displayLogged && $i->fileName != pathinfo($_SERVER["PHP_SELF"])['basename'] && Toolbox::GetAdmin() >= $i->admin) {
             echo 
             '<li class="nav-item">
-                <a class="btn btn-primary" href="', $i->fileName, '">', $i->displayName, '</a>
+                <a class="btn btn-secondary" href="', $i->fileName, '">', $i->displayName, '</a>
             </li>';
         }
     }

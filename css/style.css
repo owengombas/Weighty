@@ -16,6 +16,30 @@ h1 {
     color: #505050;
 }
 
+.btn-secondary {
+    background: rgb(95, 95, 95);
+}
+
+.btn-secondary:hover {
+    background: rgb(110, 110, 110);
+}
+
+.btn-primary {
+    background: #4586FF;
+    border-color: #4586FF;
+    outline-color: #4586FF;
+}
+
+.btn-primary:hover{
+    background: rgba(69, 134, 255, 0.815);
+    border-color: rgba(69, 134, 255, 0.815);
+}
+
+.btn-primary:not([disabled]):not(.disabled):active {
+    background: rgba(69, 134, 255, 0.815);
+    border-color: rgba(69, 134, 255, 0.815);
+}
+
 .link-white {
     color: white;
     font-weight: 1.2em;
@@ -86,7 +110,8 @@ a:hover{
 }
 
 .btn-danger {
-    background: #ff304f;
+    background: #ff304f;; 
+    border-color: #ff304f;;
 }
 
 .list-group {
@@ -100,6 +125,7 @@ a:hover{
 body {
     padding-bottom: 30px;
 }
+
 
 button:hover, .btn:hover{
     cursor: pointer;
