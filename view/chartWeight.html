@@ -77,7 +77,7 @@
         }
     }
 
-    request('php/getWeight.php', 'POST', null, function(data) {
+    request('php/getWeight.php', 'POST', {unit: 'month'}, function(data) {
         data = JSON.parse(data)
 
         if(data.length > 1) {
@@ -91,6 +91,7 @@
                 break;
             }
         }
+
         if(data.length > 0) {
             for(var i in data) {
                 datas = [];

@@ -29,7 +29,6 @@
         $message->Show();
     }
 
-    echo $valueEntered;
     if(isset($count) && $count < 1) {
 ?>
         <div class="container-fluid weighty-form">
