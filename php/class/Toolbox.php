@@ -1,4 +1,5 @@
 <?php
+    defined('APPLICATION') OR exit('Accès interdit');
     class Toolbox {
         // Check if array hasn't a empty value
         public static function ArrayHasValue($array, $keys) {

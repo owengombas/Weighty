@@ -1,4 +1,5 @@
 <?php
+    define('APPLICATION', true);
     session_start();
     session_destroy();
     

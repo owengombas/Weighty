@@ -2,38 +2,41 @@
     .chart-container {
         margin: auto;
         position: relative;
-        width: 95vw;
+        width: 87vw;
         margin-top: 60px;
     }
 </style>
 
-<div class="chart-container">   
-    <canvas id="myChart" height="120px"></canvas>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+            <div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
+                <ol class="carousel-indicators display-none"></ol>
+                <div class="carousel-inner"></div>
+                <a class="carousel-control-prev display-none" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next display-none" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+		</div>
+	</div>
 </div>
 
 <script defer>
-    var datas = [];
-    var labels = [];
+    var datas = []
+    var labels = []
 
-    request('php/getWeight.php', 'POST', null, function(data) {
-        data = JSON.parse(data);
-        
-        for(i in data) {
-            obj = {
-                x: moment(data[i].day),
-                y: data[i].weight
-            }
-            datas.push(obj);
-            labels.push(moment(data[i].day));
-        }
-        
-        var ctx = document.getElementById("myChart").getContext('2d');
-        var myChart = new Chart(ctx, {
+    function params(labels, datas) {
+        return {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Weight curve',
+                    label: moment(datas[0].x).format('MMMM YYYY'),
                     data: datas,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255,99,132,1)',
@@ -71,6 +74,35 @@
                     }]
                 }
             }
-        });
-    });
+        }
+    }
+
+    request('php/getWeight.php', 'POST', null, function(data) {
+        data = JSON.parse(data)
+
+        if(data.length > 1) {
+            $('.display-none').removeClass('display-none');
+        }
+
+        if(data.length > 0) {
+            for(var i in data) {
+                datas = [];
+                labels = [];
+                for(var y in data[i]) {
+                    datas.push({
+                        x: moment(data[i][y].day),
+                        y: data[i][y].weight
+                    })
+                    labels.push(moment(data[i][y].day))
+                }
+
+                $('.carousel-indicators').append($('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>'))
+                var container = $('<div class="carousel-item ' + (i == 0 ? 'active' : '') + '"><div class="chart-container"></div></div>')
+                var canvas = $('<canvas height="125px"></canvas>')
+                $('.carousel-inner').append(container)
+                container.find('.chart-container').append(canvas)
+                new Chart(canvas[0].getContext('2d'), params(labels, datas))
+            }
+        }
+    })
 </script>

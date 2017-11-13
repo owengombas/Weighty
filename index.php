@@ -1,4 +1,5 @@
 <?php
+    define('APPLICATION', true);
     session_start();
     require_once('php/class/Autoloader.php');
     Autoloader::Register();
@@ -48,11 +49,10 @@
             </div>
         </div>
 <?php
-        require_once('view/chartWeight.html');
     } else {
         echo '<h1 class="text-center">You have enter a weight today</h1>';
-        require_once('view/chartWeight.html');
     }
+    require_once('view/chartWeight.html');
 
     require_once('php/inc/end.inc.php');
 ?>

@@ -1,4 +1,5 @@
 <?php
+    define('APPLICATION', true);
     session_start();
     require_once('php/class/Autoloader.php');
     Autoloader::Register();
@@ -141,7 +142,7 @@
                                 <input type="text" name="valueSearch" class="form-control" placeholder="Search by username" value="<?= isset($_POST['valueSearch']) ? $_POST['valueSearch'] : '' ?>">
                             </div>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary btn-block" name="search">Search</button>
+                                <button type="submit" class="no-margin-top btn btn-primary btn-block" name="search">Search</button>
                             </div>
                         </div>
                 <?php

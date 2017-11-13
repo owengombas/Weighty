@@ -1,4 +1,5 @@
 <?php
+    defined('APPLICATION') OR exit('Accès interdit');
     class Database {
         public function __construct() {
             $this->Connection = self::GetConnection();

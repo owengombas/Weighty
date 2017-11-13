@@ -1,4 +1,5 @@
 <?php
+    defined('APPLICATION') OR exit('Accès interdit');
     // Auto load class when you call it in the project
     class Autoloader {
         public static function Autoload($className) {

@@ -1,4 +1,5 @@
 <?php
+    defined('APPLICATION') OR exit('Accès interdit');
     class Message {
         public function SetMessage($status = 0, $message = null, $data = null) {
             $this->Status = $status;

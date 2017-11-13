@@ -1,3 +1,8 @@
+<?php
+    defined('APPLICATION') OR exit('Accès interdit');
+    require_once('php/class/Autoloader.php');
+    Autoloader::Register();
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -26,9 +31,6 @@
                 <ul class="nav justify-content-end navbar-nav">
 
 <?php
-    require_once('php/class/Autoloader.php');
-    Autoloader::Register();
-
     if(Toolbox::IsConnected()) {
         echo '<li class="nav-item"><a href="edit.php" class="text-dark username btn btn-light">', unserialize($_SESSION['user'])->Username, '</a></li>';
     }

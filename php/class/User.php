@@ -1,4 +1,5 @@
 <?php
+    defined('APPLICATION') OR exit('Accès interdit');
     class User {
         public function __construct($id, $username, $email, $admin) {
             $this->ID = $id;

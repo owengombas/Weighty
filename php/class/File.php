@@ -1,4 +1,5 @@
 <?php
+    defined('APPLICATION') OR exit('Accès interdit');
     class File {
         public function __construct($fileName, $displayName, $displayLogged, $displayDisconnected, $admin = 0) {
             $this->fileName = $fileName;
