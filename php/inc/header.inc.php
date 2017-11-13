@@ -32,11 +32,12 @@
 
 <?php
     if(Toolbox::IsConnected()) {
-        echo '<li class="nav-item"><a href="edit.php" class="text-dark username btn btn-light">', unserialize($_SESSION['user'])->Username, '</a></li>';
+        echo '<li class="nav-item"><span class="text-dark username btn btn-light">', unserialize($_SESSION['user'])->Username, '</span></li>';
     }
     
     $conf = array(
         new File('index.php', 'Home', true, false),
+        new File('edit.php', 'Settings', true, false),
         new File('admin.php', 'Admin', true, false, 1),
         new File('sign_out.php', 'Sign out', true, false),
         new File('sign_in.php', 'Sign in', false, true),

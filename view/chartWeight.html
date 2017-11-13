@@ -84,6 +84,13 @@
             $('.display-none').removeClass('display-none');
         }
 
+        var active = 0;
+        for(a in data) {
+            if(moment(data[a][0].day).month() === moment().month()) {
+                active = a;
+                break;
+            }
+        }
         if(data.length > 0) {
             for(var i in data) {
                 datas = [];
@@ -96,8 +103,8 @@
                     labels.push(moment(data[i][y].day))
                 }
 
-                $('.carousel-indicators').append($('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>'))
-                var container = $('<div class="carousel-item ' + (i == 0 ? 'active' : '') + '"><div class="chart-container"></div></div>')
+                $('.carousel-indicators').append($('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" class="' + (i == active ? 'active' : '') + '"></li>'))
+                var container = $('<div class="carousel-item ' + (i == active ? 'active' : '') + '"><div class="chart-container"></div></div>')
                 var canvas = $('<canvas height="125px"></canvas>')
                 $('.carousel-inner').append(container)
                 container.find('.chart-container').append(canvas)
