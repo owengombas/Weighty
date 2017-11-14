@@ -12,12 +12,20 @@
             // Update the users informations with the entered values
             if(isset($_POST['update'])) {
                 if(Toolbox::ArrayHasValue($_POST, ['username', 'email'])) {
-                    if($_GET['id'] == Toolbox::GetUser()->ID) {
-                        $_POST['admin'] = Toolbox::GetAdmin();
-                    }
-                    $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $_GET['id']));
-                    if(isset($_GET['page']) && isset($_GET['id'])) {
-                        Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $_GET['id']));
+                    if(strlen($_POST['username']) <= 25 && strlen($_POST['username']) >= 4) {
+                        if(strlen($_POST['email']) <= 254 && strlen($_POST['email']) >= 6) {
+                            if($_GET['id'] == Toolbox::GetUser()->ID) {
+                                $_POST['admin'] = Toolbox::GetAdmin();
+                            }
+                            $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $_GET['id']));
+                            if(isset($_GET['page']) && isset($_GET['id'])) {
+                                Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $_GET['id']));
+                            }
+                        } else {
+                            $message->SetError('The e-mail must have a minimum of 6 and a maximum of 254 characters');
+                        }
+                    } else {
+                        $message->SetError('The username must have a minimum of 4 and a maximum of 25 characters');
                     }
                 } else {
                     $message->SetError('Values can\'t be empty');
@@ -41,77 +49,78 @@
 
 <div class="container-fluid weighty-form">
     <div class="row justify-content-md-center">
-        <div class="col-md-6">
-            <?php
-                // Show the selected user (Cannot delete or set me 'user')
-                if(isset($_GET['id']) && !isset($_POST['delete'])) {
-                    $res = $db->Execute('SELECT * FROM users WHERE id = ?', array($_GET['id']));
-                    $res = $res->fetch(PDO::FETCH_OBJ);
-                    if($res) {
-                        echo '<h1 class="text-center">', $res->username, '</h1>'
-            ?>
-                <form action="" method="POST">
-                    <div class="form-group">
-                        <label for="inputUsername">Username</label>
-                        <input type="text" id="inputUsername" class="form-control" placeholder="Username" name="username" value="<?= $res->username ?>">
-                    </div>
+        <?php
+            // Show the selected user (Cannot delete or set me 'user')
+            if(isset($_GET['id']) && !isset($_POST['delete'])) {
+                $res = $db->Execute('SELECT * FROM users WHERE id = ?', array($_GET['id']));
+                $res = $res->fetch(PDO::FETCH_OBJ);
+                if($res) {
+        ?>
+        <div class="col-md-3">
+            <h1 class="text-center"><?= $res->username ?></h1>
+            <form action="" method="POST">
+                <div class="form-group">
+                    <label for="inputUsername">Username</label>
+                    <input type="text" id="inputUsername" class="form-control" maxlength="25" placeholder="Username" name="username" value="<?= $res->username ?>">
+                </div>
 
-                    <div class="form-group">
-                        <label for="inputEmail">E-mail</label>
-                        <input type="email" id="inputEmail" class="form-control" placeholder="E-mail" name="email" value="<?= $res->email ?>">
+                <div class="form-group">
+                    <label for="inputEmail">E-mail</label>
+                    <input type="email" id="inputEmail" class="form-control" maxlength="254" placeholder="E-mail" name="email" value="<?= $res->email ?>">
+                </div>
+                
+                <?php if($res->id != Toolbox::GetUser()->ID) {?>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="admin" id="radioAdmin" value="1" <?= boolval($res->admin) ? 'checked' : '' ?>>
+                            Admin
+                        </label>
                     </div>
-                    
-                    <?php if($res->id != Toolbox::GetUser()->ID) {?>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="admin" id="radioAdmin" value="1" <?= boolval($res->admin) ? 'checked' : '' ?>>
-                                Admin
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="admin" id="radioUser" value="0" <?= boolval($res->admin) ? '' : 'checked' ?>>
-                                User
-                            </label>
-                        </div>
-                    <?php } ?>
-
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-secondary form-group-center" name="update">Change</button>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="admin" id="radioUser" value="0" <?= boolval($res->admin) ? '' : 'checked' ?>>
+                            User
+                        </label>
                     </div>
+                <?php } ?>
 
-                    <?php if($res->id != Toolbox::GetUser()->ID) {?>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-danger form-group-center" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                        </div>
-                    <?php } ?>
-                    
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel">Delete</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                You wan't to delete <strong><?= $res->username ?></strong> ?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" class="no-margin-top">
-                                        <button type="submit" class="btn btn-danger" name="delete" value="<?= $res->id ?>">Yes, delete</button>
-                                    </form>
-                                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-secondary form-group-center" name="update">Change</button>
+                </div>
+
+                <?php if($res->id != Toolbox::GetUser()->ID) {?>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-danger form-group-center" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                    </div>
+                <?php } ?>
+                
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            You wan't to delete <strong><?= $res->username ?></strong> ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" class="no-margin-top">
+                                    <button type="submit" class="btn btn-danger" name="delete" value="<?= $res->id ?>">Yes, delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <a href="admin.php?page=<?= $_GET['page'] ?>" class="text-center col-md-12 form-group-center">Back</a>
-                    </div>
-                </form>
+                <div class="form-group">
+                    <a href="admin.php?page=<?= $_GET['page'] ?>" class="text-center col-md-12 form-group-center">Back</a>
+                </div>
+            </form>
+        </div>
             <?php
                     } else {
                         Toolbox::Redirect('admin.php');
@@ -130,27 +139,31 @@
                         Toolbox::Redirect('admin.php');
                     }
 
+                    $search = false;
                     // Search user contains the value (email, username)
                     if(isset($_POST['search']) && !empty($_POST['valueSearch'])) {
-                        $res = $db->Execute('SELECT * FROM users WHERE username LIKE "%'.$_POST['valueSearch'].'%" OR email LIKE "%'.$_POST['valueSearch'].'%" ORDER BY username');
-                        $count = $res->rowCount();
+                        if(strlen($_POST['valueSearch']) >= 1 && strlen($_POST['valueSearch']) <= 254) {
+                            $search = true;
+                            $res = $db->Execute('SELECT * FROM users WHERE username LIKE "%'.$_POST['valueSearch'].'%" OR email LIKE "%'.$_POST['valueSearch'].'%" ORDER BY username');
+                            $count = $res->rowCount();
+                        }
                     } else {
                         $res = $db->Execute('SELECT * FROM users ORDER BY username LIMIT '.$limit.' OFFSET '.($page - 1) * $limit);
                     }
                 ?>    
-
+                    <div class="col-md-6">
                     <h1 class="text-center"><?= $count > 0 ? $count.' user'.($count > 1 ? 's' : '') : 'No results' ?></h1>
                     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                         <div class="row">
                             <div class="col-md-8">
-                                <input type="text" name="valueSearch" class="form-control" placeholder="Search by username" value="<?= isset($_POST['valueSearch']) ? $_POST['valueSearch'] : '' ?>">
+                                <input type="text" name="valueSearch" class="form-control" maxlength="254" placeholder="Search by username or e-mail" value="<?= isset($_POST['valueSearch']) ? $_POST['valueSearch'] : '' ?>">
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="no-margin-top btn btn-primary btn-block" name="search">Search</button>
                             </div>
                         </div>
                 <?php
-                    if(isset($_POST['search'])) {
+                    if($search) {
                         echo
                         '<div class="row">
                             <div class="col-md-12">

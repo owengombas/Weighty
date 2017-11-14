@@ -60,11 +60,11 @@
 
     <div class="container-fluid weighty-form">
         <div class="row justify-content-md-center">
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                     <h3>Change your weight of today (kg)</h3>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter your weight" name="valueWeight" value="<?= $res ? $res->weight : "" ?>">
+                        <input type="text" class="form-control" maxlength="4" placeholder="Enter your weight" name="valueWeight" value="<?= $res ? $res->weight : "" ?>">
                     </div>
 
                     <div class="form-group">

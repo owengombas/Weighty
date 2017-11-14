@@ -39,11 +39,11 @@
 
 <div class="container-fluid weighty-form">
     <div class="row justify-content-md-center">
-        <div class="col-md-6">
+        <div class="col-md-3">
             <h1 class="text-center">Sign in</h1>
             <form action="" method="POST">
                 <div class="form-group">
-                    <input type="text" id="inputSIEU" class="form-control" placeholder="Username" name="username" value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
+                    <input type="text" id="inputSIEU" class="form-control" placeholder="Username" maxlength="25" name="username" value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
                 </div>
 
                 <div class="form-group">

@@ -8,6 +8,10 @@ nav .btn {
     margin-left: 15px;
 }
 
+nav .username {
+    width: auto;
+}
+
 h1 {
     margin-top: 45px;
 }
@@ -16,12 +20,27 @@ h1 {
     color: #505050;
 }
 
+.list-group-item {
+    word-break: break-all;
+}
+
 .btn-secondary {
     background: rgb(95, 95, 95);
+    border-color: rgb(95, 95, 95);
 }
 
 .btn-secondary:hover {
     background: rgb(110, 110, 110);
+    border-color: rgb(95, 95, 95);
+}
+
+.btn-secondary:focus {
+    box-shadow: 0 0 0 .2rem rgba(95, 95, 95, .5);
+}
+
+.btn-secondary:active:not([disabled]):not(.disabled) {
+    background: rgb(110, 110, 110);
+    box-shadow: 0 0 0 .2rem rgba(95, 95, 95, .5);
 }
 
 .btn-primary {
@@ -199,11 +218,11 @@ form {
     bottom: -50px;
 }
 
-.display-none {
-    display: none;
-}
-
 .custom-select {
     margin: auto;
     display: block;
+}
+
+.display-none {
+    display: none;
 }

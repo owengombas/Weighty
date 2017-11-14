@@ -30,11 +30,11 @@
 ?>
         <div class="container-fluid weighty-form">
             <div class="row justify-content-md-center">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                         <h3>Enter a weight for today (kg)</h3>
                         <div class="form-group">
-                            <input type="text" id="inputWeight" class="form-control" placeholder="Weight" name="valueWeight">
+                            <input type="text" id="inputWeight" class="form-control" maxlength="4" placeholder="Weight" name="valueWeight">
                         </div>
 
                         <div class="form-group">

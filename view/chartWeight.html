@@ -8,7 +8,7 @@
 </style>
 
 <div class="container-fluid">
-    <select class="custom-select" id="date-unit">
+    <select class="custom-select display-none" id="date-unit">
         <option value="week">Week</option>
         <option value="month" selected>Month</option>
     </select>
@@ -123,8 +123,9 @@
                         break
                 }
             }
-
+            console.log(data.length);
             if(data.length > 0) {
+                $('#date-unit').removeClass('display-none');
                 for(var i in data) {
                     datas = []
                     labels = []
