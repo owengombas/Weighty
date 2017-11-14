@@ -3,6 +3,7 @@
         margin: auto;
         position: relative;
         width: 87vw;
+        height: 60vh;
         margin-top: 60px;
     }
 </style>
@@ -15,13 +16,13 @@
 	<div class="row">
 		<div class="col-md-12">
             <div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
-                <ol class="carousel-indicators display-none"></ol>
+                <ol class="controls carousel-indicators display-none"></ol>
                 <div class="carousel-inner"></div>
-                <a class="carousel-control-prev display-none" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <a class="controls carousel-control-prev display-none" href="#carouselExampleIndicators" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="sr-only">Previous</span>
                 </a>
-                <a class="carousel-control-next display-none" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <a class="controls carousel-control-next display-none" href="#carouselExampleIndicators" role="button" data-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </a>
@@ -62,6 +63,7 @@
                 }]
             },
             options: {
+                maintainAspectRatio: false,
                 scales: {
                     xAxes: [{
                         type: 'time',
@@ -98,6 +100,7 @@
             // Reset the divs content
             $('.carousel-indicators').empty()
             $('.carousel-inner').empty()
+            $('.controls').addClass('display-none');
             data = JSON.parse(data)
 
             // If data contains > 1 table, show the controls (left, right arrow, ...)
@@ -141,7 +144,7 @@
                     
                     // Create Contents
                     var container = $('<div class="carousel-item ' + (i == active ? 'active' : '') + '"><div class="chart-container"></div></div>')
-                    var canvas = $('<canvas height="115px"></canvas>')
+                    var canvas = $('<canvas></canvas>')
                     container.find('.chart-container').append(canvas)
                     $('.carousel-indicators').append($('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" class="' + (i == active ? 'active' : '') + '"></li>'))
                     $('.carousel-inner').append(container)

@@ -43,22 +43,6 @@ h1 {
     box-shadow: 0 0 0 .2rem rgba(95, 95, 95, .5);
 }
 
-.btn-primary {
-    background: #4586FF;
-    border-color: #4586FF;
-    outline-color: #4586FF;
-}
-
-.btn-primary:hover{
-    background: rgba(69, 134, 255, 0.815);
-    border-color: rgba(69, 134, 255, 0.815);
-}
-
-.btn-primary:not([disabled]):not(.disabled):active {
-    background: rgba(69, 134, 255, 0.815);
-    border-color: rgba(69, 134, 255, 0.815);
-}
-
 .link-white {
     color: white;
     font-weight: 1.2em;
