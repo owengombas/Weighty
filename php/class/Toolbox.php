@@ -12,9 +12,10 @@
         }
 
         public static function RedirectToHome() {
-            self::Redirect('Location: index.php');
+            self::Redirect('index.php');
         }
-
+        
+        // Redirect with get parameters (array(... => ...))
         public static function Redirect($url, $params = null) {
             if(isset($params)) {
                 $str = '';
@@ -25,7 +26,7 @@
             header('Location: '.$url.(isset($str) ? '?'.$str : ''));
         }
 
-        // Redirect to the back page
+        // Redirect to the current page (Don't recommend to use)
         public static function RedirectToCurrentPage() {
             if(isset($_SERVER['HTTP_REFERER'])){
                 self::Redirect($_SERVER['HTTP_REFERER']);
@@ -47,7 +48,7 @@
         }
 
         public static function GetUser() {
-            return unserialize($_SESSION['user']);
+            return isset($_SESSION['user']) ? unserialize($_SESSION['user']) : null;
         }
 
         public static function Refresh() {

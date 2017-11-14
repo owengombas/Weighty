@@ -5,6 +5,7 @@
     Autoloader::Register();
     
     if(!Toolbox::IsConnected()) {
+        // Sign up tests
         if(isset($_POST['submit'])) {
             $message = new Message();
             if(Toolbox::ArrayHasValue($_POST, ['username', 'email', 'password', 'confirm'])) {
@@ -33,15 +34,12 @@
                 $message->SetError('Fill all fields');
             }
         }
-    } else {
-        Toolbox::RedirectToHome();
-    }
-    
-    require_once('php/inc/header.inc.php'); 
-    
-    if(isset($message)) {
-        $message->Show();
-    }
+        
+        require_once('php/inc/header.inc.php'); 
+        
+        if(isset($message)) {
+            $message->Show();
+        }
 ?>
 
 <div class="container-fluid weighty-form">
@@ -79,5 +77,8 @@
 </div>
 
 <?php
-    require_once('php/inc/end.inc.php');
+        require_once('php/inc/end.inc.php');
+    } else {
+        Toolbox::RedirectToHome();
+    }
 ?>

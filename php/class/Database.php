@@ -22,6 +22,7 @@
         public function InsertUpdateWeight($value, $update) {
             $message = new Message();
 
+            // Test to insert value
             if(isset($value)) {
                 if(is_numeric($value)) {
                     $value = (int)$value;

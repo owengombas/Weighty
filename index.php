@@ -16,20 +16,17 @@
         if(isset($_POST['submit'])) {
             $message = $db->InsertUpdateWeight($_POST['valueWeight'], false);
             if($message->Status >= 1){
-                Toolbox::RedirectToCurrentPage();
+                Toolbox::RedirectToHome();
             }
         }
-    } else {
-        Toolbox::Redirect('sign_up.php');
-    }
 
-    require_once('php/inc/header.inc.php');
-   
-    if(isset($message)) {
-        $message->Show();
-    }
+        require_once('php/inc/header.inc.php');
+    
+        if(isset($message)) {
+            $message->Show();
+        }
 
-    if(isset($count) && $count < 1) {
+        if(isset($count) && $count < 1) {
 ?>
         <div class="container-fluid weighty-form">
             <div class="row justify-content-md-center">
@@ -48,10 +45,13 @@
             </div>
         </div>
 <?php
-    } else {
-        echo '<h1 class="text-center">You have enter a weight today</h1>';
-    }
-    require_once('view/chartWeight.html');
+        } else {
+            echo '<h1 class="text-center">You have enter a weight today</h1>';
+        }
+        require_once('view/chartWeight.html');
 
-    require_once('php/inc/end.inc.php');
+        require_once('php/inc/end.inc.php');
+    } else {
+        Toolbox::Redirect('sign_up.php');
+    }
 ?>

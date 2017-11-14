@@ -4,56 +4,57 @@
     require_once('php/class/Autoloader.php');
     Autoloader::Register();
 
-    if(!Toolbox::IsConnected()) {
-        Toolbox::Redirect('sign_up.php');
-    }
-
-    $message = new Message();
-    if(isset($_GET['message'])) {
-        $message->SetSuccess($_GET['message']);
-    }
-    $db = new Database();
-    $res = $db->Execute('SELECT users.password, weights.weight FROM users LEFT OUTER JOIN weights ON weights.id_users = :id AND weights.day = CURDATE() WHERE users.id = :id', array(':id' => Toolbox::GetUser()->ID));
-    $res = $res->fetch(PDO::FETCH_OBJ);
-
-    if(isset($_POST['changeWeight'])) {
-        $message = $db->InsertUpdateWeight($_POST['valueWeight'], isset($res->weight));
-        if($message->Status >= 1){
-            Toolbox::Redirect('edit.php', array('message' => $message->Message));
+    if(Toolbox::IsConnected()) {
+        // Get the success message by $_GET
+        $message = new Message();
+        if(isset($_GET['message'])) {
+            $message->SetSuccess($_GET['message']);
         }
-    } 
 
-    if(isset($_POST['changePassword'])) {
-        if(Toolbox::ArrayHasValue($_POST, ['oldPassword', 'newPassword', 'confirmPassword'])) {
-            if(password_verify($_POST['oldPassword'], $res->password)) {
-                if($_POST['newPassword'] == $_POST['confirmPassword']) {
-                    if(strlen($_POST['newPassword']) >= 4) {
-                        $db->Execute('UPDATE users SET password = ? WHERE id = ?', array(password_hash($_POST['newPassword'], PASSWORD_BCRYPT), Toolbox::GetUser()->ID));
-                        Toolbox::Redirect('edit.php', array('message' => 'Your passdword has been changed'));
+        $db = new Database();
+        $res = $db->Execute('SELECT users.password, weights.weight FROM users LEFT OUTER JOIN weights ON weights.id_users = :id AND weights.day = CURDATE() WHERE users.id = :id', array(':id' => Toolbox::GetUser()->ID));
+        $res = $res->fetch(PDO::FETCH_OBJ);
+
+        if(isset($_POST['changeWeight'])) {
+            $message = $db->InsertUpdateWeight($_POST['valueWeight'], isset($res->weight));
+            if($message->Status >= 1){
+                Toolbox::Redirect('edit.php', array('message' => $message->Message));
+            }
+        } 
+
+        // Change password tests
+        if(isset($_POST['changePassword'])) {
+            if(Toolbox::ArrayHasValue($_POST, ['oldPassword', 'newPassword', 'confirmPassword'])) {
+                if(password_verify($_POST['oldPassword'], $res->password)) {
+                    if($_POST['newPassword'] == $_POST['confirmPassword']) {
+                        if(strlen($_POST['newPassword']) >= 4) {
+                            $db->Execute('UPDATE users SET password = ? WHERE id = ?', array(password_hash($_POST['newPassword'], PASSWORD_BCRYPT), Toolbox::GetUser()->ID));
+                            Toolbox::Redirect('edit.php', array('message' => 'Your passdword has been changed'));
+                        } else {
+                            $message->SetError('Your password is too short');
+                        }
                     } else {
-                        $message->SetError('Your password is too short');
+                        $message->SetError('Passwords do not match');
                     }
                 } else {
-                    $message->SetError('Passwords do not match');
+                    $message->SetError('Your old password doesn\'t match');
                 }
             } else {
-                $message->SetError('Your old password doesn\'t match');
+                $message->SetError('Fill all fields');
             }
-        } else {
-            $message->SetError('Fill all fields');
         }
-    }
 
-    if(isset($_POST['deleteWeight'])) {
-        $db->Execute('DELETE FROM weights WHERE id_users = ? AND day = CURDATE()', array(Toolbox::GetUser()->ID));
-        Toolbox::Redirect('edit.php', array('message' => 'Your weight has been deleted'));
-    }
+        // Delete weight of today
+        if(isset($_POST['deleteWeight'])) {
+            $db->Execute('DELETE FROM weights WHERE id_users = ? AND day = CURDATE()', array(Toolbox::GetUser()->ID));
+            Toolbox::Redirect('edit.php', array('message' => 'Your weight has been deleted'));
+        }
 
-    require_once('php/inc/header.inc.php');
-    
-    if(isset($message)) {
-        $message->Show();
-    }
+        require_once('php/inc/header.inc.php');
+        
+        if(isset($message)) {
+            $message->Show();
+        }
 ?>
     <h1 class="text-center">Setting</h1>
 
@@ -125,5 +126,8 @@
     </div>
 
 <?php
-    require_once('php/inc/end.inc.php');
+        require_once('php/inc/end.inc.php');
+    } else {
+        Toolbox::Redirect('sign_up.php');
+    }
 ?>

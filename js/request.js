@@ -1,3 +1,4 @@
+// Jquery AJAX request
 function request(url, type, data, callback) {
     $.ajax({
         url: url,

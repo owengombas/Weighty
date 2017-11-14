@@ -8,6 +8,10 @@
 </style>
 
 <div class="container-fluid">
+    <select class="custom-select" id="date-unit">
+        <option value="week">Week</option>
+        <option value="month" selected>Month</option>
+    </select>
 	<div class="row">
 		<div class="col-md-12">
             <div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
@@ -27,16 +31,27 @@
 </div>
 
 <script defer>
+    var dateUnit = $('#date-unit')
     var datas = []
     var labels = []
 
-    function params(labels, datas) {
+    // Graph object
+    function params(labels, datas, unit) {
+
+        // Get date depends on the unit
+        if(unit == 'month') {
+            label = moment(datas[0].x).format('MMMM YYYY')
+        } else {
+            label = moment().day(1).week(moment(datas[0].x).week())
+            label = label.format('DD.MM.YYYY - ') + moment(label).day(7).format('DD.MM.YYYY')
+        }
+
         return {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: moment(datas[0].x).format('MMMM YYYY'),
+                    label: label,
                     data: datas,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255,99,132,1)',
@@ -53,6 +68,7 @@
                         time: {
                             parser: 'YYYY-MM-DD',
                             unit: 'day',
+                            stepSize: unit == 'month' ? 2 : 1,
                             tooltipFormat: 'DD.MM.YYYY',
                             displayFormats: {
                                 day: 'DD.MM.YYYY'
@@ -77,40 +93,69 @@
         }
     }
 
-    request('php/getWeight.php', 'POST', {unit: 'month'}, function(data) {
-        data = JSON.parse(data)
+    function getWeight(unit) {
+        request('php/getWeight.php', 'POST', {unit: unit}, function(data) {
+            // Reset the divs content
+            $('.carousel-indicators').empty()
+            $('.carousel-inner').empty()
+            data = JSON.parse(data)
 
-        if(data.length > 1) {
-            $('.display-none').removeClass('display-none');
-        }
-
-        var active = 0;
-        for(a in data) {
-            if(moment(data[a][0].day).month() === moment().month()) {
-                active = a;
-                break;
+            // If data contains > 1 table, show the controls (left, right arrow, ...)
+            if(data.length > 1) {
+                $('.display-none').removeClass('display-none')
             }
-        }
 
-        if(data.length > 0) {
-            for(var i in data) {
-                datas = [];
-                labels = [];
-                for(var y in data[i]) {
-                    datas.push({
-                        x: moment(data[i][y].day),
-                        y: data[i][y].weight
-                    })
-                    labels.push(moment(data[i][y].day))
+            // Get the active month or week, if there is not -> the active month or week will be 0
+            var active = 0
+            for(a in data) {
+                switch(unit) {
+                    case 'month':
+                        if(moment(data[a][0].day).month() === moment().month()) {
+                            active = a
+                            break
+                        }
+                        break
+                    case 'week':
+                        if(moment(data[a][0].day).week() === moment().week()) {
+                            active = a
+                            break
+                        }
+                        break
                 }
-
-                $('.carousel-indicators').append($('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" class="' + (i == active ? 'active' : '') + '"></li>'))
-                var container = $('<div class="carousel-item ' + (i == active ? 'active' : '') + '"><div class="chart-container"></div></div>')
-                var canvas = $('<canvas height="125px"></canvas>')
-                $('.carousel-inner').append(container)
-                container.find('.chart-container').append(canvas)
-                new Chart(canvas[0].getContext('2d'), params(labels, datas))
             }
-        }
+
+            if(data.length > 0) {
+                for(var i in data) {
+                    datas = []
+                    labels = []
+
+                    // Create the arrays for the chart
+                    for(var y in data[i]) {
+                        datas.push({
+                            x: moment(data[i][y].day),
+                            y: data[i][y].weight
+                        })
+                        labels.push(moment(data[i][y].day))
+                    }
+                    
+                    // Create Contents
+                    var container = $('<div class="carousel-item ' + (i == active ? 'active' : '') + '"><div class="chart-container"></div></div>')
+                    var canvas = $('<canvas height="115px"></canvas>')
+                    container.find('.chart-container').append(canvas)
+                    $('.carousel-indicators').append($('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" class="' + (i == active ? 'active' : '') + '"></li>'))
+                    $('.carousel-inner').append(container)
+                    new Chart(canvas[0].getContext('2d'), params(labels, datas, unit))
+                }
+            }
+        })
+    }
+
+    dateUnit.change(function(){
+        getWeight(dateUnit.val())
+
+        // Scroll to bottom
+        $('html, body').animate({ scrollTop: $(document).height() }, 'slow')
     })
+
+    getWeight('month')
 </script>

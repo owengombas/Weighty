@@ -3,6 +3,7 @@
     require_once('php/class/Autoloader.php');
     Autoloader::Register();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -35,6 +36,7 @@
         echo '<li class="nav-item"><span class="text-dark username btn btn-light">', unserialize($_SESSION['user'])->Username, '</span></li>';
     }
     
+    // Array for the header naviguation (file name, display name, access logged, access disconnect, need to be admin)
     $conf = array(
         new File('index.php', 'Home', true, false),
         new File('edit.php', 'Settings', true, false),

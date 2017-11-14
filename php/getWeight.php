@@ -15,6 +15,9 @@
             $unit = 'month';
         }
 
+        $unit = $unit == 'month' || $unit == 'week' ? $unit : 'month';
+
+        // Sort the array by week or month
         $return = array();
         $index = new stdClass();
         $index->index = 0;
@@ -28,6 +31,7 @@
                     $day = date('YW', strtotime($value->day));
                     break;
             }
+            
             if($day == $index->day) {
                 array_push($return[$index->index], $value);
             } else {

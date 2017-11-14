@@ -202,3 +202,8 @@ form {
 .display-none {
     display: none;
 }
+
+.custom-select {
+    margin: auto;
+    display: block;
+}

@@ -4,44 +4,46 @@
     require_once('php/class/Autoloader.php');
     Autoloader::Register();
 
-    if(Toolbox::GetAdmin() >= 1) {
-        $db = new Database();
-        $message = new Message();
-        if(isset($_POST['update'])) {
-            if(Toolbox::ArrayHasValue($_POST, ['username', 'email'])) {
-                if($_GET['id'] == Toolbox::GetUser()->ID) {
-                    $_POST['admin'] = Toolbox::GetAdmin();
-                }
-                $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $_GET['id']));
-                if(isset($_GET['page']) && isset($_GET['id'])) {
-                    Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $_GET['id']));
-                }
-            } else {
-                $message->SetError('Values can\'t be empty');
-            }
-        }
+    if(Toolbox::IsConnected()) {
+        if(Toolbox::GetAdmin() >= 1) {
+            $db = new Database();
+            $message = new Message();
 
-        if(isset($_POST['delete'])) {
-            $res = $db->Execute('DELETE FROM users WHERE id = ?', array($_POST['delete']));
-            if(isset($_GET['page'])) {
-                Toolbox::Redirect('admin.php', array('page' => $_GET['page']));
+            // Update the users informations with the entered values
+            if(isset($_POST['update'])) {
+                if(Toolbox::ArrayHasValue($_POST, ['username', 'email'])) {
+                    if($_GET['id'] == Toolbox::GetUser()->ID) {
+                        $_POST['admin'] = Toolbox::GetAdmin();
+                    }
+                    $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $_GET['id']));
+                    if(isset($_GET['page']) && isset($_GET['id'])) {
+                        Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $_GET['id']));
+                    }
+                } else {
+                    $message->SetError('Values can\'t be empty');
+                }
             }
-        }
-    } else {
-        Toolbox::RedirectToHome();
-    }
 
-    require_once('php/inc/header.inc.php'); 
-    
-    if(isset($message)) {
-        $message->Show();
-    }
+            // Delete the users
+            if(isset($_POST['delete'])) {
+                $res = $db->Execute('DELETE FROM users WHERE id = ?', array($_POST['delete']));
+                if(isset($_GET['page'])) {
+                    Toolbox::Redirect('admin.php', array('page' => $_GET['page']));
+                }
+            }
+
+            require_once('php/inc/header.inc.php'); 
+            
+            if(isset($message)) {
+                $message->Show();
+            }
 ?>
 
 <div class="container-fluid weighty-form">
     <div class="row justify-content-md-center">
         <div class="col-md-6">
             <?php
+                // Show the selected user (Cannot delete or set me 'user')
                 if(isset($_GET['id']) && !isset($_POST['delete'])) {
                     $res = $db->Execute('SELECT * FROM users WHERE id = ?', array($_GET['id']));
                     $res = $res->fetch(PDO::FETCH_OBJ);
@@ -115,6 +117,7 @@
                         Toolbox::Redirect('admin.php');
                     } 
                 } else {
+                    // List and pagination
                     $limit = 15;
                     $page = isset($_GET['page']) ? $_GET['page'] : 1;
                     $res = $db->Execute('SELECT COUNT(*) as count FROM users');
@@ -127,6 +130,7 @@
                         Toolbox::Redirect('admin.php');
                     }
 
+                    // Search user contains the value (email, username)
                     if(isset($_POST['search']) && !empty($_POST['valueSearch'])) {
                         $res = $db->Execute('SELECT * FROM users WHERE username LIKE "%'.$_POST['valueSearch'].'%" OR email LIKE "%'.$_POST['valueSearch'].'%" ORDER BY username');
                         $count = $res->rowCount();
@@ -197,5 +201,11 @@
 </div>
 
 <?php
-    require_once('php/inc/end.inc.php');
+                require_once('php/inc/end.inc.php');
+            } else {
+                Toolbox::RedirectToHome();
+            }
+        } else {
+            Toolbox::Redirect('sign_up.php');
+        }
 ?>
