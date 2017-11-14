@@ -34,7 +34,8 @@
 
             // Delete the users
             if(isset($_POST['delete'])) {
-                $res = $db->Execute('DELETE FROM users WHERE id = ?', array($_POST['delete']));
+                $db->Execute('DELETE FROM weights WHERE id_users = ?', array($_POST['delete']));
+                $db->Execute('DELETE FROM users WHERE id = ?', array($_POST['delete']));
                 if(isset($_GET['page'])) {
                     Toolbox::Redirect('admin.php', array('page' => $_GET['page']));
                 }

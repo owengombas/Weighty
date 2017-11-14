@@ -51,9 +51,12 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-secondary form-group-center" name="submit">Sign in</button>
+                    <button type="submit" class="btn btn-primary form-group-center" name="submit">Sign in</button>
                 </div>
             </form>
+            <div class="text-center">
+                <a href="sign_up.php">You don't have an account</a>
+            </div>
         </div>
     </div>
 </div>

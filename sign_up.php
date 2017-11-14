@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-secondary form-group-center" name="submit">Sign up</button>
+                    <button type="submit" class="btn btn-primary form-group-center" name="submit">Sign up</button>
                 </div>
             </form>
             <div class="text-center">
