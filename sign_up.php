@@ -19,8 +19,8 @@
                             if(strlen($password) >= 4) {
                                 $password = password_hash($password, PASSWORD_BCRYPT);
                                 $db = new Database();
-                                $res = $db->Execute('SELECT * FROM users WHERE username=? OR email=?', array($username, $email));
-                                if($res->rowCount() <= 0) {
+                                $res = $db->Execute('SELECT COUNT(*) as count FROM users WHERE username=? OR email=?', array($username, $email));
+                                if($res->fetch(PDO::FETCH_OBJ)->count == 0) {
                                     $db->Execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', array($username, $email, $password));
                                     Toolbox::Redirect('sign_in.php');
                                 } else {

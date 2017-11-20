@@ -12,14 +12,17 @@
             // Update the users informations with the entered values
             if(isset($_POST['update'])) {
                 if(Toolbox::ArrayHasValue($_POST, ['username', 'email'])) {
-                    if(strlen($_POST['username']) <= 25 && strlen($_POST['username']) >= 4) {
-                        if(strlen($_POST['email']) <= 254 && strlen($_POST['email']) >= 6) {
-                            if($_GET['id'] == Toolbox::GetUser()->ID) {
-                                $_POST['admin'] = Toolbox::GetAdmin();
-                            }
-                            $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $_GET['id']));
-                            if(isset($_GET['page']) && isset($_GET['id'])) {
-                                Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $_GET['id']));
+                    $username = $_POST['username'];
+                    $email = $_POST['email'];
+                    $id = $_GET['id'];
+                    if(strlen($username) <= 25 && strlen($username) >= 4) {
+                        if(strlen($email) <= 254 && strlen($email) >= 6) {
+                            $res = $db->Execute('SELECT COUNT(*) as count FROM users WHERE id <> ? AND (username=? OR email=?)', array($id, $username, $email));
+                            if($res->fetch(PDO::FETCH_OBJ)->count == 0) {
+                                $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $id));
+                                Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $id));
+                            } else {
+                                $message->SetError('This username or e-mail exists, choose another one');
                             }
                         } else {
                             $message->SetError('The e-mail must have a minimum of 6 and a maximum of 254 characters');

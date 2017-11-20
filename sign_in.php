@@ -55,7 +55,7 @@
                 </div>
             </form>
             <div class="text-center">
-                <a href="sign_up.php">You don't have an account</a>
+                <a href="sign_up.php">You don't have an account ?</a>
             </div>
         </div>
     </div>
