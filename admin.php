@@ -19,6 +19,7 @@
                         if(strlen($email) <= 254 && strlen($email) >= 6) {
                             $res = $db->Execute('SELECT COUNT(*) as count FROM users WHERE id <> ? AND (username=? OR email=?)', array($id, $username, $email));
                             if($res->fetch(PDO::FETCH_OBJ)->count == 0) {
+                                $_POST['admin'] = !isset($_POST['admin']) ? 1 : $_POST['admin'];
                                 $res = $db->Execute('UPDATE users SET username = ?, email = ?, admin = ? WHERE id = ?', array($_POST['username'], $_POST['email'], $_POST['admin'], $id));
                                 Toolbox::Redirect('admin.php', array('page' => $_GET['page'], 'id' => $id));
                             } else {
